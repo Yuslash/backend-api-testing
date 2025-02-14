@@ -5,8 +5,11 @@ import cors from 'cors'
 import { sequelize } from './productmodel.js'
 import Product from './productmodel.js'
 import Medusa from "@medusajs/medusa-js"
-import getProduct from './Container/get-product.js'
 import { Router } from 'express'
+import productRoutes from './Container/get-product.js'
+import getCart from './routes/get-cart.js'
+import createCart from './routes/create-cart.js'
+import updateLineItem from './routes/update-line-items.js'
 
 
 dotenv.config()
@@ -60,12 +63,15 @@ app.post('/api/products', async (req, res) => {
 
 
   //Medusa Container service
-  router.get('/products', getProduct)
 
   app.use(router)
 
   const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND
 
+  app.use('/api', productRoutes({ API_KEY, MEDUSA_BACKEND_URL }))
+  app.use('/api', getCart({API_KEY, MEDUSA_BACKEND_URL}))
+  app.use('/api', createCart({API_KEY, MEDUSA_BACKEND_URL}))
+  app.use('/api', updateLineItem({API_KEY, MEDUSA_BACKEND_URL}))
 
 
 app.listen(3000, () => {
