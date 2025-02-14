@@ -5,6 +5,8 @@ import cors from 'cors'
 import { sequelize } from './productmodel.js'
 import Product from './productmodel.js'
 import Medusa from "@medusajs/medusa-js"
+import getProduct from './Container/get-product.js'
+import { Router } from 'express'
 
 
 dotenv.config()
@@ -22,6 +24,7 @@ sequelize.sync({ force: false })  // 'force: false' ensures it doesn't drop the 
 app.use(express.json())
 app.use(cors())
 const API_KEY = process.env.API_KEY
+const router = Router()
 
 app.get('/api/products', async (req, res) => {
 
@@ -55,9 +58,15 @@ app.post('/api/products', async (req, res) => {
     }
   })
 
+
+  //Medusa Container service
+  router.get('/products', getProduct)
+
+  app.use(router)
+
   const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND
 
-  
+
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000')
