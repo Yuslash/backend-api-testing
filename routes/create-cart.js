@@ -10,13 +10,13 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
 
     const cartData = {
       region_id: 'reg_01JM2716AFTAH2BKT5KMFRE2P4',  
+      email: 'testuser@example.com',
       items: [
         {
           variant_id: variant_id,  
           quantity: 1
         }
-      ],
-      email: 'testuser@example.com'  
+      ]
     }
 
     const response = await fetch(`${MEDUSA_BACKEND_URL}/store/carts`, {
@@ -29,7 +29,8 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
     })
 
     const data = await response.json()
-    res.json(data)
+
+    res.json({ cartId: data.id })
   })
 
   return router
