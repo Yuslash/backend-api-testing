@@ -4,17 +4,19 @@ import fetch from 'node-fetch'
 const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
   const router = express.Router()
 
-  router.post('/carts', async (req, res) => {
-    const { region_id, variant_id } = req.body
+  router.post('/carts/create', async (req, res) => {
+
+    const { variant_id } = req.body
 
     const cartData = {
-      region_id: region_id || 'default-region-id',
+      region_id: 'reg_01JM2716AFTAH2BKT5KMFRE2P4',  
       items: [
         {
-          variant_id: variant_id || 'default-variant-id',
+          variant_id: variant_id,  
           quantity: 1
         }
-      ]
+      ],
+      email: 'testuser@example.com'  
     }
 
     const response = await fetch(`${MEDUSA_BACKEND_URL}/store/carts`, {
