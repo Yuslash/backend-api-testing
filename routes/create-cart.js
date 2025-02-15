@@ -10,7 +10,7 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
 
     const cartData = {
       region_id: 'reg_01JM2716AFTAH2BKT5KMFRE2P4',  
-      email: 'testuser@example.com',
+      email: 'alphatester@billionoillid.com',
       items: [
         {
           variant_id: variant_id,  
@@ -30,7 +30,9 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
 
     const data = await response.json()
 
-    res.json({ cartId: data.id })
+    console.log(data.cart.id, variant_id);
+    
+    res.json({ cartId: data.cart.id })
   })
 
   return router
