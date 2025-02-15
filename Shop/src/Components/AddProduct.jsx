@@ -3,17 +3,30 @@ import { useEffect, useState } from "react"
 export default function AddProduct({apiPath,panelTitle}) {
   
     const [productData, setProductData] = useState([])
-    const [cart, setCart] = useState(null)
-    const [ isCartEmpty, setIsCartEmpty ] = useState(true)
-    const [ cartId, setCartId ] = useState(localStorage.getItem('cartId') || null)
+    const [cart, setCart] = useState([])
+    // const [ cartUpdated, setCartUpdated ] = useState(false)
 
+    const cartId = 'cart_01JM4F95CGDXY1BEH45NYB8ABM'
+
+    // lets write some logic to get the cart data without retrive the data each time manualy
     useEffect(() => {
 
-      if(cartId) {
-        localStorage.setItem('cartId', cartId)
+      const fetchCart = async () => {
+
+        const response = await fetch(`http://localhost:3000/api/carts/${cartId}`)
+        const data = await response.json()
+
+        const items = data.cart?.cart?.items || []
+
+        setCart(items)
+        console.log(items)
+
       }
 
-    }, [cartId])
+      fetchCart()
+
+    }, [])
+    
  
     useEffect(() => {
 
@@ -33,39 +46,65 @@ export default function AddProduct({apiPath,panelTitle}) {
 
       const addToCart = async (variantId) => {
 
-        if(!cartId) {
-          const response = await fetch(`http://localhost:3000/api/carts/create`, {
-            method: "POST",
-            headers: {
-              "Content-Type" : "application/json"
-            },
-            body: JSON.stringify({variant_id : variantId})
-          })
-  
-          const data = await response.json()
-  
-          setCartId(data.cartId)
-          console.log(data.cartId);
-          
+            const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items`, {
 
-        } else {
-
-          const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items`, {
-
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ variant_id: variantId, quantity: 1 })
-
-          })
-
-          const data = await response.json()
-          console.log(`item added to cart`, data);
-          
-
-        }
-
+              method: "POST",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ variant_id: variantId, quantity: 1 })
+            })
+            
+            const data = await response.json()
+            setCart(data.cart.items)
+            console.log(`item added to cart`, data.cart.items);
       }
 
+      //remove products from the cart
+      const removeFromCart = async (lineId) => {
+        const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items/${lineId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        })
+
+        console.log(lineId)
+        
+    
+        if (response.ok) {
+          // Update cart after deleting the item
+          setCart((prevCart) => prevCart.filter((item) => item.id !== lineId))
+        }
+      }
+
+      //increase decrease the quantity
+      const updateQuantity = async (lineId, newQuantity) => {
+        if (newQuantity === 0 ) removeFromCart(lineId) // Prevent setting quantity to 0
+    
+        const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items/${lineId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quantity: newQuantity })
+        });
+    
+        // if(response.ok) {
+        //   setCartUpdated((prev) => !prev)
+        // }
+        // else {
+        //     console.error("Failed to update item quantity")
+        // }
+
+        
+    
+        const data = await response.json();
+        console.log("Updated cart:", data.cart)
+
+        const fetchUpdatedCart = async () => {
+          const cartResponse = await fetch(`http://localhost:3000/api/carts/${cartId}`);
+          const cartData = await cartResponse.json();
+          setCart(cartData.cart?.cart?.items || []);
+        };
+        fetchUpdatedCart()
+        
+      }
+    
 
 
   return (
@@ -89,10 +128,29 @@ export default function AddProduct({apiPath,panelTitle}) {
 {/* CART SECTION */}
       <div className='cart-container my-4 mx-6 rounded-md shadow-md bg-slate-50 flex justify-between items-center p-8 flex-col'>
                 <h1 className='text-2xl font-semibold text-center'>This is Cart Section</h1>
-                <div className='cart-section w-full min-h-24 bg-slate-100 rounded-md mt-4 flex p-4 justify-center items-center'>
+                <div className='cart-section w-full min-h-24 bg-slate-100 rounded-md mt-4 flex flex-col p-4 justify-between items-center text-center'>
                 
                 
-                    {isCartEmpty ? (<p className='text-lg font-medium text-slate-300'>Cart is Empty</p>) : <p>Yeah products available</p>}
+                    {!cart || cart.length === 0 ? (<p className='text-lg font-medium text-slate-300'>Cart is Empty</p>) : (
+                      cart.map((item) => (
+                        <div key={item.id} className="flex justify-between w-full mb-4 items-center">
+                          <h1>{item.product_title}</h1>
+                          <div className="flex flex-col ">
+                              <div className="flex gap-3 items-center">
+                                <p>Total Price: {item.quantity * item.unit_price}</p>
+                                <button onClick={() => removeFromCart(item.id)} className="bg-red-500 py-1 px-3  rounded-md text-white cursor-pointer hover:bg-red-600">Remove</button>
+                              </div>
+
+                              <div className="flex justify-between items-center mt-3">
+                                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className=" bg-red-300 px-2 rounded-md cursor-pointer hover:bg-red-400">-</button>
+                                  <span>{item.quantity}</span>
+                                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className=" bg-green-300 px-2 rounded-md cursor-pointer hover:bg-green-400">+</button>
+                              </div>
+
+                          </div>
+                        </div>
+                      ))
+                    )}
                 
                 
                 </div>
