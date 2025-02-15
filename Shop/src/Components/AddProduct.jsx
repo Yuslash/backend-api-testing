@@ -8,23 +8,22 @@ export default function AddProduct({apiPath,panelTitle}) {
 
     const cartId = 'cart_01JM4F95CGDXY1BEH45NYB8ABM'
 
+    const fetchCart = async () => {
+
+      const response = await fetch(`http://localhost:3000/api/carts/${cartId}`)
+      const data = await response.json()
+
+      const items = data.cart?.cart?.items || []
+      const sortedItems = [...items].sort((a, b) => a.id.localeCompare(b.id))
+
+      setCart(sortedItems)
+
+    }
+
+
     // lets write some logic to get the cart data without retrive the data each time manualy
     useEffect(() => {
-
-      const fetchCart = async () => {
-
-        const response = await fetch(`http://localhost:3000/api/carts/${cartId}`)
-        const data = await response.json()
-
-        const items = data.cart?.cart?.items || []
-
-        setCart(items)
-        console.log(items)
-
-      }
-
       fetchCart()
-
     }, [])
     
  
@@ -41,67 +40,50 @@ export default function AddProduct({apiPath,panelTitle}) {
 
       fetchProductDetail()
 
-    }, [])
+    }, [apiPath])
 
 
       const addToCart = async (variantId) => {
 
-            const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items`, {
-
+            await fetch(`http://localhost:3000/api/carts/${cartId}/line-items`, {
               method: "POST",
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ variant_id: variantId, quantity: 1 })
             })
             
-            const data = await response.json()
-            setCart(data.cart.items)
-            console.log(`item added to cart`, data.cart.items);
+            await fetchCart()
       }
 
       //remove products from the cart
       const removeFromCart = async (lineId) => {
-        const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items/${lineId}`, {
+        
+        await fetch(`http://localhost:3000/api/carts/${cartId}/line-items/${lineId}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
         })
 
-        console.log(lineId)
-        
-    
-        if (response.ok) {
-          // Update cart after deleting the item
-          setCart((prevCart) => prevCart.filter((item) => item.id !== lineId))
-        }
+        await fetchCart()
+
       }
 
       //increase decrease the quantity
       const updateQuantity = async (lineId, newQuantity) => {
-        if (newQuantity === 0 ) removeFromCart(lineId) // Prevent setting quantity to 0
+
+        if (newQuantity === 0 ) {
+          await removeFromCart(lineId)
+          return
+        } // Prevent setting quantity to 0
     
         const response = await fetch(`http://localhost:3000/api/carts/${cartId}/line-items/${lineId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ quantity: newQuantity })
-        });
-    
-        // if(response.ok) {
-        //   setCartUpdated((prev) => !prev)
-        // }
-        // else {
-        //     console.error("Failed to update item quantity")
-        // }
+        })
 
-        
-    
         const data = await response.json();
         console.log("Updated cart:", data.cart)
 
-        const fetchUpdatedCart = async () => {
-          const cartResponse = await fetch(`http://localhost:3000/api/carts/${cartId}`);
-          const cartData = await cartResponse.json();
-          setCart(cartData.cart?.cart?.items || []);
-        };
-        fetchUpdatedCart()
+        await fetchCart()
         
       }
     
