@@ -6,17 +6,9 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
 
   router.post('/carts/create', async (req, res) => {
 
-    const { variant_id } = req.body
-
     const cartData = {
       region_id: 'reg_01JM2716AFTAH2BKT5KMFRE2P4',  
       email: 'alphatester@billionoillid.com',
-      items: [
-        {
-          variant_id: variant_id,  
-          quantity: 1
-        }
-      ]
     }
 
     const response = await fetch(`${MEDUSA_BACKEND_URL}/store/carts`, {
@@ -30,7 +22,7 @@ const createCart = ({ API_KEY, MEDUSA_BACKEND_URL }) => {
 
     const data = await response.json()
 
-    console.log(data.cart.id, variant_id);
+    console.log(data.cart.id);
     
     res.json({ cartId: data.cart.id })
   })

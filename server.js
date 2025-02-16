@@ -10,6 +10,8 @@ import productRoutes from './Container/get-product.js'
 import getCart from './routes/get-cart.js'
 import createCart from './routes/create-cart.js'
 import updateLineItem from './routes/update-line-items.js'
+import deleteLineItem from './routes/delete-line.items.js'
+import updateLineQuantity from './routes/update-line-items-quantity.js'
 
 
 dotenv.config()
@@ -72,6 +74,8 @@ app.post('/api/products', async (req, res) => {
   app.use('/api', getCart({API_KEY, MEDUSA_BACKEND_URL}))
   app.use('/api', createCart({API_KEY, MEDUSA_BACKEND_URL}))
   app.use('/api', updateLineItem({API_KEY, MEDUSA_BACKEND_URL}))
+  app.use('/api', deleteLineItem({API_KEY, MEDUSA_BACKEND_URL}))
+  app.use('/api', updateLineQuantity({API_KEY, MEDUSA_BACKEND_URL}))
 
 
 app.listen(3000, () => {
