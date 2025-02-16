@@ -7,10 +7,22 @@ export default function AddProduct({ apiPath, panelTitle, addToCart }) {
     const fetchProductDetail = async () => {
       const response = await fetch(`http://localhost:3000${apiPath}`)
       const data = await response.json()
-      setProductData(data.products)
+
+      //filter the products data by the collection name
+      const filterProducts = data.products.filter((product) => {
+
+        const collectionTitle = product.collection?.title
+
+        return (
+          collectionTitle && collectionTitle.toLowerCase() === panelTitle.toLowerCase()
+        )
+
+      })
+      
+      setProductData(filterProducts)
     }
     fetchProductDetail()
-  }, [apiPath])
+  }, [apiPath, panelTitle])
 
   return (
     <>
