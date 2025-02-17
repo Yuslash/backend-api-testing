@@ -1,6 +1,38 @@
-import React from "react"
+import axios from "axios"
+import React, { useEffect } from "react"
 
 const CartSection = ({ cart, totalPrice, removeFromCart, updateQuantity }) => {
+
+    const loadRazorpay = async () => {
+
+        const { data } = await axios.post('http://localhost:3000/create-order', {cart})
+
+        const options = {
+
+            key: 'rzp_test_pKK2NJzjS82SfW',
+            amount: data.amount,
+            currency: data.currency,
+            order_id: data.id,
+            handler: function (response) {
+                alert('Payment Successful: ' + response.razorpay_payment_id)
+            }
+
+        }
+
+        const rzp = new window.Razorpay(options)
+        rzp.open()
+
+    }
+
+    useEffect(() => {
+
+        const script = document.createElement('script')
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+        script.async = true
+        document.body.appendChild(script)
+
+    },[])
+
   return (
     <div className="cart-container overflow-hidden my-4 mx-6 rounded-md shadow-md bg-slate-50 flex justify-between items-center p-8 flex-col">
       <div className="flex items-center justify-between w-full">
@@ -51,6 +83,9 @@ const CartSection = ({ cart, totalPrice, removeFromCart, updateQuantity }) => {
           ))
         )}
       </div>
+
+        <button onClick={loadRazorpay} className="p-3 bg-indigo-500 mt-4 text-white rounded-md shadow-md w-full hover:bg-indigo-600 cursor-pointer">Checkout</button>
+
     </div>
   )
 }

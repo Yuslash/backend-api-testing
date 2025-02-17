@@ -12,6 +12,7 @@ import createCart from './routes/create-cart.js'
 import updateLineItem from './routes/update-line-items.js'
 import deleteLineItem from './routes/delete-line.items.js'
 import updateLineQuantity from './routes/update-line-items-quantity.js'
+import Razorpay from 'razorpay'
 
 
 dotenv.config()
@@ -62,6 +63,45 @@ app.post('/api/products', async (req, res) => {
       res.status(500).json({ error: error.message })
     }
   })
+
+    const key_id = process.env.KEY_ID
+    const key_secret = process.env.KEY_SECRET    
+
+    // rezor integration
+    const razorpay = new Razorpay({
+      key_id: key_id,
+      key_secret: key_secret
+    }) 
+
+    app.post('/create-order', async (req, res) => {
+
+      const { cart } = req.body
+
+      if(!cart || cart.length === 0) {
+        return res.status(400).json({ error: 'cart is empty' })
+      }
+
+      const totalPrice = cart.reduce(
+        (total, item) => total + item.quantity * item.unit_price,
+        0
+      )
+
+      const options = {
+
+        amount: totalPrice * 100,
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+        notes: {
+          key1: "value3",
+          key2: "value2"
+        }
+
+      }
+
+      const order =  await razorpay.orders.create(options)
+      res.json(order)
+
+    })
 
 
   //Medusa Container service

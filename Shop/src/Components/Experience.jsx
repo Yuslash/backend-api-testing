@@ -60,7 +60,7 @@ export const Experience = () => {
       <AddProduct 
         apiPath={"/api/products"} 
         panelTitle={"Subscriptions"}
-        addToCart={addToCart} // pass the handler down if needed
+        addToCart={addToCart} 
       />
 
       <AddProduct 
