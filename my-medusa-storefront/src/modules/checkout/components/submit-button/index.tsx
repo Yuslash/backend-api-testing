@@ -6,9 +6,13 @@ import { useFormStatus } from "react-dom"
 
 export function SubmitButton({
   children,
+  variant = "primary",
+  className,
   "data-testid": dataTestId,
 }: {
   children: React.ReactNode
+  variant?: "primary" | "secondary" | "transparent" | "danger" | null
+  className?: string
   "data-testid"?: string
 }) {
   const { pending } = useFormStatus()
@@ -16,8 +20,10 @@ export function SubmitButton({
   return (
     <Button
       size="large"
+      className={className}
       type="submit"
       isLoading={pending}
+      variant={variant || "primary"}
       data-testid={dataTestId}
     >
       {children}
