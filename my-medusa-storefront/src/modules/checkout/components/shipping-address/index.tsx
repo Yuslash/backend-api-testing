@@ -70,6 +70,27 @@ const ShippingAddress = ({
       }))
   }
 
+  useEffect(() => {
+    // Ensure cart is not null and has a shipping_address before setting form data
+    if (cart && cart.shipping_address) {
+      setFormAddress(cart?.shipping_address, cart?.email)
+    }
+
+    if (cart && !cart.email && customer?.email) {
+      setFormAddress(undefined, customer.email)
+    }
+  }, [cart]) // Add cart as a dependency
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
 
   return (
     <>
