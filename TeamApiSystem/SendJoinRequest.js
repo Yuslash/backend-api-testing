@@ -1,9 +1,10 @@
 import Team from "../../models/team.js";
-import JoinRequest from "../../models/JoinRequest.js";
+import TeamJoinRequest from "../../models/TeamJoinRequest.js";
+import User from "../../models/user.js"; 
 
 const sendJoinRequest = async (req, res) => {
     try {
-        const { teamName } = req.body
+        const { teamName } = req.params
         const userId = req.session.user.id
 
         const team = await Team.findOne({ teamName })
@@ -11,10 +12,20 @@ const sendJoinRequest = async (req, res) => {
 
         if (team.members.length >= 4) return res.status(400).json({ success: false, message: 'Team is full' })
 
-        const existingRequest = await JoinRequest.findOne({ userId, teamId: team._id })
+        const existingRequest = await TeamJoinRequest.findOne({ userId, teamId: team._id })
         if (existingRequest) return res.status(400).json({ success: false, message: 'Request already sent' })
 
-        const newRequest = await JoinRequest.create({ userId, teamId: team._id, status: 'pending' })
+        
+        const user = await User.findById(userId).select('username')
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+       
+        const newRequest = await TeamJoinRequest.create({ 
+            userId, 
+            username: user.username, 
+            teamId: team._id, 
+            status: 'pending' 
+        })
 
         res.json({ success: true, message: 'Join request sent', requestId: newRequest._id })
     } catch {
