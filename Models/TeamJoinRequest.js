@@ -7,6 +7,6 @@ const joinRequestSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 })
 
-const TeamJoinRequest = mongoose.model('JoinRequest', joinRequestSchema)
+const TeamJoinRequest = mongoose.model('TeamJoinRequest', joinRequestSchema)
 
 export default TeamJoinRequest
