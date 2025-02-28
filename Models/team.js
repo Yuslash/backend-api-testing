@@ -14,6 +14,10 @@ const teamSchema = new mongoose.Schema({
         ref: 'user',
         required: true
       },
+      username: {
+        type: String,
+        required: true
+      },
       role: {
         type: String,
         default: 'Member', 
@@ -27,6 +31,7 @@ const teamSchema = new mongoose.Schema({
   }
 })
 
+// Pre-save validation for leader and member count
 teamSchema.pre('save', function (next) {
   if (this.members.length > 4) 
     return next(new Error('A team cannot have more than 4 members'))
