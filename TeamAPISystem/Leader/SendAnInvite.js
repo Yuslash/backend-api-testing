@@ -1,4 +1,4 @@
-import Team from "../../../models/team.js"
+import Team from "../../models/team.js"
 import User from "../../../models/user.js"
 import LeaderInviteRequest from "../../../models/LeaderInviteRequest.js"
 

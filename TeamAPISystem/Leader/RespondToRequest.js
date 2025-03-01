@@ -1,4 +1,4 @@
-import TeamJoinRequest from "../../models/TeamJoinRequest.js"
+import TeamJoinRequest from "../../../models/TeamJoinRequest.js"
 
 const acceptJoinRequest = async (req, res) => {
     try {

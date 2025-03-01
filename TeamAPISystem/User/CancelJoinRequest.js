@@ -1,4 +1,4 @@
-import TeamJoinRequest from "../../models/TeamJoinRequest.js"
+import TeamJoinRequest from "../../../models/TeamJoinRequest.js"
 
 const cancelJoinRequest = async (req, res) => {
     try {

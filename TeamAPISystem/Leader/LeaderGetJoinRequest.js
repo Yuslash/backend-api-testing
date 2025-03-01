@@ -1,5 +1,5 @@
-import Team from "../../models/team.js"
-import TeamJoinRequest from "../../models/TeamJoinRequest.js"
+import Team from "../../../models/team.js"
+import TeamJoinRequest from "../../../models/TeamJoinRequest.js"
 
 const getTeamRequests = async (req, res) => {
     try {
