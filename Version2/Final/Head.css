@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+
+.header {
+    min-width: 100vw;
+    height: 10vh;
+    background-color: rgb(17 24 39);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 50;    
+}
+
+.nav-section{
+    width: 100%;
+}
+
+.brand-name{
+    font-family: Oxanium;
+    font-size: 20px;
+}
+
+.nav-section ul{
+    display: flex; 
+    list-style: none;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-section > ul > li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 15px;
+    width: 100px;
+    cursor: pointer;
+}
+
+.nav-section a {
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s;
+}
+
+.nav-section a:hover {
+    border-radius: 5px;
+}
+
+.profile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 15px;
+    width: 200px;
+    cursor: pointer;
+    list-style: none;
+  }
+  
+  .profile-icon img {
+    width: 48px;
+    height: 48px; 
+    border-radius: 50%; 
+    cursor: pointer;
+    object-fit: cover; 
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 75px; 
+    right: 65px;
+    width: 150px;  
+    background-color: rgb(17 24 39);
+    color: white;
+    text-align: start;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s;
+    border-radius: 5px;
+    /* background-color: yellow; */
+  }
+  
+  .dropdown-menu ul {
+    height: 100%;
+    width: 100%;
+    /* background-color: green; */
+  }
+
+  .dropdown-menu ul li {
+    text-decoration: none;
+    list-style: none;
+    display: flex;
+    /* background-color: red; */
+    align-items: center;
+    gap: 10px;
+    height: 35px;
+    margin: 10px;
+    padding: 0px 10px;
+    border-radius: 4px;
+
+  }
+
+  .dropdown-menu ul li:hover {
+    background-color: rgb(74, 74, 74);
+  }
+
+  .dropdown-menu img {
+    height: 25px;
+    width: 25px;
+  }
+
+  .dropdown-menu ul li h3{
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+ .img-1 {
+    background-color: white;
+ }
+  
+@media (max-width: 700px) {
+    *{
+        max-width: 100%;
+    }
+    .header ul li{
+        margin: 0px;
+        padding: 0;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 400px) {
+    *{
+        max-width: 100%;
+    }
+
+    .nav-section{
+        width: 80%;
+    }
+
+    .nav-section ul{
+        margin: 0;
+    }
+
+    .nav-section ul li , .profile-icon ul li{
+        margin: 0px;
+        padding: 0;
+        font-size: 9px;
+    } 
+}
+
